@@ -110,7 +110,7 @@ int GraphAlgorithms::selectNextCity(int ant, int N, Variables &vars,
       if (zz < p)
         flag = false;
     }
-    if (counter > N * N) {
+    if (counter > N * 2) {
       if (vars.graphDist.GetEdges(from, to) > 0)
         flag = false;
     }
@@ -191,16 +191,15 @@ void GraphAlgorithms::updateTrails(std::vector<Ant> antsVector,
 }
 
 // перезапуск муравьев
-void GraphAlgorithms::restartAnts(std::vector<Ant> &antsVector, Variables &vars,
-                                  int N, TsmResult &rez) {
+void GraphAlgorithms::restartAnts(std::vector<Ant> &antsVector, int N,
+                                  TsmResult &rez) {
   int ant, i, to = 1;
   for (ant = 1; ant <= N; ant++) {
-    if (antsVector[ant].tourLength < vars.best) {
-      vars.best = antsVector[ant].tourLength;
-      vars.bestIndex = ant;
+    if (antsVector[ant].tourLength < rez.distance) {
       std::vector<int> tmp(antsVector[ant].path.begin(),
                            antsVector[ant].path.end() - 1);
       rez.vertices = tmp;
+      rez.distance = antsVector[ant].tourLength;
     }
     antsVector[ant].nextCity = 1;
     antsVector[ant].tourLength = 0.0;
@@ -222,7 +221,7 @@ TsmResult GraphAlgorithms::SolveTravelingSalesmanProblem(Graph &graph) {
   TsmResult rez;
   Variables vars;
   vars.Nvert = (int)graph.GetVertices();
-  vars.best = INF;
+  rez.distance = INF;
   vars.INIT_PHEROMONE = 1.0 / (double)vars.Nvert;
   vars.graphDist = graph;
   std::vector<std::vector<double>> temp(
@@ -244,7 +243,7 @@ TsmResult GraphAlgorithms::SolveTravelingSalesmanProblem(Graph &graph) {
                    vars.INIT_PHEROMONE);
       getProbability(vars, vars.Nvert);
       if (curTime != MAX_TIME)
-        restartAnts(antsVector, vars, vars.Nvert, rez);
+        restartAnts(antsVector, vars.Nvert, rez);
     }
     // уменьшение феромонов для новых переходов если феромон обнулился
     vars.INIT_PHEROMONE *= 0.5;

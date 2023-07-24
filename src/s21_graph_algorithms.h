@@ -40,8 +40,6 @@ struct Variables {
   Graph graphDist;
   std::vector<std::vector<double>> grapPherom;
   std::vector<std::vector<double>> graphProbability;
-  int bestIndex;
-  double best;
   int Nvert;
   double INIT_PHEROMONE;
   int curTime2;
@@ -88,8 +86,7 @@ private:
   int selectNextCity(int ant, int N, Variables &vars,
                      std::vector<Ant> &antsVector);
   int simulateAnts(std::vector<Ant> &antsVector, int N, Variables &vars);
-  void restartAnts(std::vector<Ant> &antsVector, Variables &vars, int N,
-                   TsmResult &rez);
+  void restartAnts(std::vector<Ant> &antsVector, int N, TsmResult &rez);
 
   void updateTrails(std::vector<Ant> antsVector,
                     std::vector<std::vector<double>> &grapPherom, int N,
